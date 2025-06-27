@@ -1,10 +1,12 @@
 import os
 import discord
-from discord.ext import commands
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from apscheduler.triggers.cron import CronTrigger
-from dotenv import load_dotenv
 import pytz
+from apscheduler.triggers.cron import CronTrigger
+from discord.ext import commands
+from dotenv import load_dotenv
+from message_scheduler import MessageScheduler
+from scheduled_message import ScheduledMessage
+
 
 def main():
     load_dotenv()
@@ -15,27 +17,21 @@ def main():
     intents = discord.Intents.default()
     bot = commands.Bot(command_prefix="!", intents=intents)
 
-    scheduler = AsyncIOScheduler()
-
-
     @bot.event
     async def on_ready():
         print(f"{bot.user} has connected to Discord!")
-
-        if not scheduler.get_jobs():
-            scheduler.add_job(send_youtube_video,
-                              CronTrigger(day_of_week='fri', hour=15, minute=0, timezone=pytz.timezone('US/Central')))
-            scheduler.start()
-            print("Scheduler started.")
-
-
-    async def send_youtube_video():
         channel = bot.get_channel(channel_id)
-        if channel:
-            await channel.send("https://youtu.be/2WSqXrvm8i0?si=6saOxuUm408Dfwsi")
+        if not channel:
+            print("Could not find a channel with that ID")
         else:
-            print("Channel not found.")
-
+            messages = [
+                ScheduledMessage(
+                    "https://youtu.be/2WSqXrvm8i0?si=6saOxuUm408Dfwsi",
+                    CronTrigger(day_of_week='fri', hour=15, minute=0, timezone=pytz.timezone('US/Central'))
+                )
+            ]
+            message_scheduler = MessageScheduler(channel, messages)
+            message_scheduler.start()
 
     bot.run(token)
 
