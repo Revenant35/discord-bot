@@ -58,8 +58,9 @@ def main():
         members = [member for member in ctx.message.mentions if not member.bot]
         if not members:
             await generic_cunky(ctx)
-        for member in members:
-            await cunky_user(ctx, member)
+        else:
+            for member in members:
+                await cunky_user(ctx, member)
 
 
     async def generic_cunky(ctx):
