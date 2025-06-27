@@ -15,6 +15,9 @@ def main():
     channel_id = int(os.getenv("CHANNEL_ID"))
 
     intents = discord.Intents.default()
+    intents.message_content = True
+    intents.voice_states = True  # Required to manage voice states
+    intents.guilds = True  # Required to access guild information
     bot = commands.Bot(command_prefix="!", intents=intents)
 
     @bot.event
@@ -32,6 +35,20 @@ def main():
             ]
             message_scheduler = MessageScheduler(channel, messages)
             message_scheduler.start()
+
+    @bot.command(name="kill")
+    async def kill(ctx):
+        if not ctx.author.guild_permissions.administrator:
+            await ctx.send("You do not have permission to use this command.")
+            return
+        if not ctx.message.mentions:
+            await ctx.send("Please mention a user to disconnect.")
+            return
+
+        for member in ctx.message.mentions:
+            if member.voice:
+                await member.move_to(None)
+                await ctx.send(f"{member.display_name} has perished.")
 
     bot.run(token)
 
