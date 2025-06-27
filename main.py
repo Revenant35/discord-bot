@@ -40,7 +40,7 @@ def main():
 
     @bot.command(name="kill")
     async def kill(ctx):
-        members = [member for member in ctx.guild.members if not member.bot]
+        members = [member for member in ctx.message.mentions if not member.bot]
 
         if not members:
             await ctx.send("Please mention a user to disconnect.")
