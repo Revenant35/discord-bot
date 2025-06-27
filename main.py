@@ -50,6 +50,8 @@ def main():
             if member.voice:
                 await member.move_to(None)
                 await ctx.send(f"{member.display_name} has perished.")
+            else:
+                await ctx.send(f"{member.display_name} is not in a voice channel.")
 
     @bot.command(name="cunky")
     async def cunky(ctx):
