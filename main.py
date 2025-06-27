@@ -40,14 +40,13 @@ def main():
 
     @bot.command(name="kill")
     async def kill(ctx):
-        if not ctx.author.guild_permissions.administrator:
-            await ctx.send("You do not have permission to use this command.")
-            return
-        if not ctx.message.mentions:
+        members = [member for member in ctx.guild.members if not member.bot]
+
+        if not members:
             await ctx.send("Please mention a user to disconnect.")
             return
 
-        for member in ctx.message.mentions:
+        for member in members:
             if member.voice:
                 await member.move_to(None)
                 await ctx.send(f"{member.display_name} has perished.")
