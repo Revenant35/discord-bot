@@ -4,7 +4,6 @@ import discord
 import pytz
 from apscheduler.triggers.cron import CronTrigger
 from discord.ext import commands
-from discord.ext.commands import Context
 from dotenv import load_dotenv
 from message_scheduler import MessageScheduler
 from scheduled_message import ScheduledMessage
@@ -18,8 +17,9 @@ def main():
 
     intents = discord.Intents.default()
     intents.message_content = True
-    intents.voice_states = True  # Required to manage voice states
-    intents.guilds = True  # Required to access guild information
+    intents.members = True
+    intents.voice_states = True
+    intents.guilds = True
     bot = commands.Bot(command_prefix="!", intents=intents)
 
     @bot.event
@@ -54,6 +54,11 @@ def main():
 
     @bot.command(name="cunky")
     async def cunky(ctx):
+        members = [member for member in ctx.guild.members if not member.bot]
+        random_member = "Everyone"
+        if members:
+            random_member = random.choice(members).mention
+
         messages = [
             "Cunky is good",
             "Cunky is great",
@@ -64,11 +69,15 @@ def main():
             "Cunky is nutritious",
             "Cunky is the future",
             "Cunky loves you",
+            "I'd share a beer with cunky",
+            f"{random_member} is infatuated with cunky",
+            f"{random_member} despises cunky",
         ]
 
         await ctx.send(random.choice(messages))
 
     bot.run(token)
+
 
 if __name__ == "__main__":
     main()
