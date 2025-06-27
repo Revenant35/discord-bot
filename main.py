@@ -1,8 +1,10 @@
 import os
+import random
 import discord
 import pytz
 from apscheduler.triggers.cron import CronTrigger
 from discord.ext import commands
+from discord.ext.commands import Context
 from dotenv import load_dotenv
 from message_scheduler import MessageScheduler
 from scheduled_message import ScheduledMessage
@@ -49,6 +51,22 @@ def main():
             if member.voice:
                 await member.move_to(None)
                 await ctx.send(f"{member.display_name} has perished.")
+
+    @bot.command(name="cunky")
+    async def cunky(ctx):
+        messages = [
+            "Cunky is good",
+            "Cunky is great",
+            "Cunky is the best",
+            "Cunky is bad",
+            "Cunky is terrible",
+            "Cunky is the worst",
+            "Cunky is nutritious",
+            "Cunky is the future",
+            "Cunky loves you",
+        ]
+
+        await ctx.send(random.choice(messages))
 
     bot.run(token)
 
