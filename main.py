@@ -43,18 +43,22 @@ def main():
 
     @bot.command(name="kill")
     async def kill(ctx: Context):
+        from kill_messages import get_kill_message, get_not_in_channel_message, get_no_user_message
+
         members = [member for member in ctx.message.mentions if not member.bot]
 
         if not members:
-            await ctx.send("Please mention a user to disconnect.")
+            await ctx.send(get_no_user_message())
             return
 
         for member in members:
             if member.voice:
                 await member.move_to(None)
-                await ctx.send(f"{member.display_name} has perished.")
+                msg = get_kill_message(member.display_name)
+                await ctx.send(msg)
             else:
-                await ctx.send(f"{member.display_name} is not in a voice channel.")
+                msg = get_not_in_channel_message(member.display_name)
+                await ctx.send(msg)
 
     @bot.command(name="cunky")
     async def cunky(ctx: Context):
