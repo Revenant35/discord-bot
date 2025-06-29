@@ -69,6 +69,10 @@ def main():
             for member in members:
                 await ctx.send(get_cunky_message_for_user(member.mention))
 
+    @bot.command(name="krill")
+    async def krill(ctx: Context):
+        await ctx.send("Learn more about shrimp welfare: https://www.shrimpwelfareproject.org/")
+
     bot.run(token)
 
 
