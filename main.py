@@ -24,6 +24,7 @@ def main():
     intents.voice_states = True
     intents.guilds = True
     bot = commands.Bot(command_prefix="!", intents=intents)
+    message_scheduler = MessageScheduler()
 
     @bot.event
     async def on_ready():
@@ -38,8 +39,13 @@ def main():
                     CronTrigger(day_of_week='fri', hour=15, minute=0, timezone=pytz.timezone('US/Central'))
                 )
             ]
-            message_scheduler = MessageScheduler(channel, messages)
+            message_scheduler.schedule_messages(channel, messages)
             message_scheduler.start()
+
+    @bot.event
+    async def on_disconnect():
+        print("Bot has disconnected from Discord!")
+        message_scheduler.shutdown()
 
     @bot.command(name="kill")
     async def kill(ctx: Context):
